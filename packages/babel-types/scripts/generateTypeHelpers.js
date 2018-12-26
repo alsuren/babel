@@ -6,6 +6,7 @@ const generateBuilders = require("./generators/generateBuilders");
 const generateValidators = require("./generators/generateValidators");
 const generateAsserts = require("./generators/generateAsserts");
 const generateConstants = require("./generators/generateConstants");
+const generateNativeConstants = require("./generators/generateNativeConstants");
 const format = require("./utils/formatCode");
 
 const baseDir = path.join(__dirname, "../src");
@@ -36,4 +37,7 @@ writeFile(generateAsserts(), "asserts/generated/index.js");
 console.log(`  ${chalk.green("✔")} Generated asserts`);
 
 writeFile(generateConstants(), "constants/generated/index.js");
+console.log(`  ${chalk.green("✔")} Generated constants`);
+
+writeFile(generateNativeConstants(), "../native/generated/constants.rs");
 console.log(`  ${chalk.green("✔")} Generated constants`);

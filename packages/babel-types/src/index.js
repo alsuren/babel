@@ -103,7 +103,9 @@ export { default as isNodesEquivalent } from "./validators/isNodesEquivalent";
 export { default as isReferenced } from "./validators/isReferenced";
 export { default as isScope } from "./validators/isScope";
 export { default as isSpecifierDefault } from "./validators/isSpecifierDefault";
-export { default as isType } from "./validators/isType";
+// TODO: work out a good structure for the rust source dir and exported binary
+// modules.
+export { isType } from "../native";
 export {
   default as isValidES3Identifier,
 } from "./validators/isValidES3Identifier";
