@@ -5,7 +5,7 @@ use neon::prelude::*;
 
 fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let node_type = cx.argument::<JsString>(0)?.value();
-    let target_type = cx.argument::<JsString>(0)?.value();
+    let target_type = cx.argument::<JsString>(1)?.value();
 
     if node_type == target_type {
         return Ok(cx.boolean(true));
