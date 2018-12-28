@@ -1,7 +1,14 @@
-#[macro_use]
-extern crate neon;
-
+use lazy_static::lazy_static;
 use neon::prelude::*;
+use neon::register_module;
+use std::collections::HashMap;
+
+lazy_static!{
+    // TODO: generate these
+    static ref ALIAS_KEYS: HashMap<&'static str, Vec<&'static str>> = [
+        ("ArrayExpression", vec!["Expression"])
+    ].iter().cloned().collect();
+}
 
 fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let node_type = cx.argument::<JsString>(0)?.value();
