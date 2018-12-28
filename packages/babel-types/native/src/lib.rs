@@ -4,10 +4,10 @@ extern crate neon;
 use neon::prelude::*;
 
 fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
-    let node_type = cx.argument::<JsNumber>(0)?.value();
-    let target_type = cx.argument::<JsNumber>(0)?.value();
+    let node_type = cx.argument::<JsString>(0)?.value();
+    let target_type = cx.argument::<JsString>(0)?.value();
 
-    if node_type != target_type {
+    if node_type == target_type {
         return Ok(cx.boolean(true));
     }
     // TODO:
@@ -26,4 +26,4 @@ fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     Ok(cx.boolean(false))
 }
 
-register_module!(mut cx, { cx.export_function("hello", is_type) });
+register_module!(mut cx, { cx.export_function("isType", is_type) });
