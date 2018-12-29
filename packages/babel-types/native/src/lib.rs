@@ -10,11 +10,18 @@ fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
         Ok(s) => s.value(),
         // TODO: work out why this is sometimes undefined?
         Err(_) => {
-            // println!("Not a string: {:?}", cx.argument_opt(0));
+            println!("nodeType is not a string");
             return Ok(cx.boolean(false));
         }
     };
-    let target_type = cx.argument::<JsString>(1)?.value();
+    let target_type = match cx.argument::<JsString>(1) {
+        Ok(s) => s.value(),
+        // TODO: work out why this is sometimes undefined?
+        Err(_) => {
+            println!("targetType is not a string");
+            return Ok(cx.boolean(false));
+        }
+    };
 
     if node_type == target_type {
         return Ok(cx.boolean(true));
