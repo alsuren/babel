@@ -3,11 +3,21 @@ use neon::prelude::*;
 use neon::register_module;
 use std::collections::HashMap;
 
+fn to_hashmap(arr: Vec<(&str, Vec<&str>)>) -> HashMap<String, Vec<String>> {
+    arr.iter()
+        .map(|(k, v)| (k.to_string(), v.iter().map(|i| i.to_string()).collect()))
+        .collect()
+}
+
 lazy_static!{
-    // TODO: generate these
-    static ref ALIAS_KEYS: HashMap<&'static str, Vec<&'static str>> = [
+    // TODO: generate these, and consider storing them precomputed using a PHF.
+    pub static ref ALIAS_KEYS: HashMap<String, Vec<String>> = to_hashmap(vec![
         ("ArrayExpression", vec!["Expression"])
-    ].iter().cloned().collect();
+    ]);
+
+    pub static ref FLIPPED_ALIAS_KEYS: HashMap<String, Vec<String>> =  to_hashmap(vec![
+        ("Expression", vec!["ArrayExpression"])
+    ]);
 }
 
 fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
@@ -17,19 +27,19 @@ fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     if node_type == target_type {
         return Ok(cx.boolean(true));
     }
-    // TODO:
-    // // This is a fast-path. If the test above failed, but an alias key is found, then the
-    // // targetType was a primary node type, so there's no need to check the aliases.
-    // if (ALIAS_KEYS[targetType]) return false;
-    //
-    // const aliases: ?Array<string> = FLIPPED_ALIAS_KEYS[targetType];
-    // if (aliases) {
-    //   if (aliases[0] === nodeType) return true;
-    //
-    //   for (const alias of aliases) {
-    //     if (nodeType === alias) return true;
-    //   }
-    // }
+    // This is a fast-path. If the test above failed, but an alias key is found, then the
+    // targetType was a primary node type, so there's no need to check the aliases.
+    if ALIAS_KEYS.contains_key(&target_type) {
+        return Ok(cx.boolean(false));
+    };
+
+    if let Some(aliases) = FLIPPED_ALIAS_KEYS.get(&target_type) {
+        for alias in aliases {
+            if &node_type == alias {
+                return Ok(cx.boolean(true));
+            }
+        }
+    }
     Ok(cx.boolean(false))
 }
 
