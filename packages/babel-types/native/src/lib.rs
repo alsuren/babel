@@ -6,7 +6,14 @@ mod generated_constants;
 use self::generated_constants::{ALIAS_KEYS, FLIPPED_ALIAS_KEYS};
 
 fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
-    let node_type = cx.argument::<JsString>(0)?.value();
+    let node_type = match cx.argument::<JsString>(0) {
+        Ok(s) => s.value(),
+        // TODO: work out why this is sometimes undefined?
+        Err(_) => {
+            // println!("Not a string: {:?}", cx.argument_opt(0));
+            return Ok(cx.boolean(false));
+        }
+    };
     let target_type = cx.argument::<JsString>(1)?.value();
 
     if node_type == target_type {
