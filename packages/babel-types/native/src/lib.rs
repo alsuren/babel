@@ -1,24 +1,9 @@
-use lazy_static::lazy_static;
 use neon::prelude::*;
 use neon::register_module;
-use std::collections::HashMap;
 
-fn to_hashmap(arr: Vec<(&str, Vec<&str>)>) -> HashMap<String, Vec<String>> {
-    arr.iter()
-        .map(|(k, v)| (k.to_string(), v.iter().map(|i| i.to_string()).collect()))
-        .collect()
-}
+mod generated_constants;
 
-lazy_static!{
-    // TODO: generate these, and consider storing them precomputed using a PHF.
-    pub static ref ALIAS_KEYS: HashMap<String, Vec<String>> = to_hashmap(vec![
-        ("ArrayExpression", vec!["Expression"])
-    ]);
-
-    pub static ref FLIPPED_ALIAS_KEYS: HashMap<String, Vec<String>> =  to_hashmap(vec![
-        ("Expression", vec!["ArrayExpression"])
-    ]);
-}
+use self::generated_constants::{ALIAS_KEYS, FLIPPED_ALIAS_KEYS};
 
 fn is_type(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let node_type = cx.argument::<JsString>(0)?.value();
