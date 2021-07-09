@@ -6,11 +6,12 @@ const generateBuilders = require("./generators/generateBuilders");
 const generateValidators = require("./generators/generateValidators");
 const generateAsserts = require("./generators/generateAsserts");
 const generateConstants = require("./generators/generateConstants");
+const generateNativeConstants = require("./generators/generateNativeConstants");
 const format = require("./utils/formatCode");
 
 const baseDir = path.join(__dirname, "../src");
 
-function writeFile(content, location) {
+function writeFile(content, location, prettier = true) {
   const file = path.join(baseDir, location);
 
   try {
@@ -21,7 +22,11 @@ function writeFile(content, location) {
     }
   }
 
-  fs.writeFileSync(file, format(content, file));
+  if (prettier) {
+    fs.writeFileSync(file, format(content, file));
+  } else {
+    fs.writeFileSync(file, content);
+  }
 }
 
 console.log("Generating @babel/types dynamic functions");
@@ -36,4 +41,11 @@ writeFile(generateAsserts(), "asserts/generated/index.js");
 console.log(`  ${chalk.green("✔")} Generated asserts`);
 
 writeFile(generateConstants(), "constants/generated/index.js");
+console.log(`  ${chalk.green("✔")} Generated constants`);
+
+writeFile(
+  generateNativeConstants(),
+  "../native/src/generated_constants.rs",
+  false
+);
 console.log(`  ${chalk.green("✔")} Generated constants`);

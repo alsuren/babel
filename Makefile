@@ -7,7 +7,7 @@ export FORCE_COLOR = true
 
 SOURCES = packages codemods
 
-.PHONY: build build-dist watch lint fix clean test-clean test-only test test-ci publish bootstrap
+.PHONY: build build-dist watch lint fix clean test-clean test-only test test-ci publish bootstrap neon
 
 build: clean clean-lib
 	./node_modules/.bin/gulp build
@@ -17,10 +17,10 @@ build: clean clean-lib
 	# generate flow and typescript typings
 	node scripts/generators/flow.js > ./packages/babel-types/lib/index.js.flow
 	node scripts/generators/typescript.js > ./packages/babel-types/lib/index.d.ts
-ifneq ("$(BABEL_COVERAGE)", "true")
-	make build-standalone
-	make build-preset-env-standalone
-endif
+# ifneq ("$(BABEL_COVERAGE)", "true")
+# 	make build-standalone
+# 	make build-preset-env-standalone
+# endif
 
 build-standalone:
 	./node_modules/.bin/gulp build-babel-standalone
@@ -46,8 +46,12 @@ watch: clean clean-lib
 	# development too.
 	BABEL_ENV=development ./node_modules/.bin/gulp build-no-bundle
 	node ./packages/babel-types/scripts/generateTypeHelpers.js
+	neon build --path packages/babel-types/
 	node scripts/generators/flow.js > ./packages/babel-types/lib/index.js.flow
 	BABEL_ENV=development ./node_modules/.bin/gulp watch
+
+neon:
+	neon build --path packages/babel-types/
 
 flow:
 	./node_modules/.bin/flow check --strip-root

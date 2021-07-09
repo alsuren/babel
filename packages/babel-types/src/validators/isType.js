@@ -1,10 +1,12 @@
 // @flow
+export { isType as default } from "../../native/index.node";
+
 import { FLIPPED_ALIAS_KEYS, ALIAS_KEYS } from "../definitions";
 
 /**
  * Test if a `nodeType` is a `targetType` or if `targetType` is an alias of `nodeType`.
  */
-export default function isType(nodeType: string, targetType: string): boolean {
+export function isType(nodeType: string, targetType: string): boolean {
   if (nodeType === targetType) return true;
 
   // This is a fast-path. If the test above failed, but an alias key is found, then the

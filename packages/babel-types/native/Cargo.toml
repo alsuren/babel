@@ -1,0 +1,19 @@
+[package]
+edition = "2018"
+name = "babel-types"
+version = "7.2.2"
+authors = ["David Laban <alsuren@gmail.com>"]
+license = "MIT"
+build = "build.rs"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "babel_types"
+crate-type = ["dylib"]
+
+[build-dependencies]
+neon-build = "0.2.0"
+
+[dependencies]
+neon = "0.2.0"
+lazy_static = "*"
